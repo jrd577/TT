@@ -8,7 +8,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Coin Send">
-<link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjogIkNvaW4gU2VuZCIsICJzaG9ydF9uYW1lIjogIkNvaW4gU2VuZCIsICJzdGFydF91cmwiOiAiLi8iLCAiZGlzcGxheSI6ICJmdWxsc2NyZWVuIiwgImRpc3BsYXlfb3ZlcnJpZGUiOiBbImZ1bGxzY3JlZW4iLCAic3RhbmRhbG9uZSJdLCAib3JpZW50YXRpb24iOiAicG9ydHJhaXQiLCAiYmFja2dyb3VuZF9jb2xvciI6ICIjZmZmZmZmIiwgInRoZW1lX2NvbG9yIjogIiNmZmZmZmYifQ==">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
 <title>TikTok Coin Send – demo</title>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -302,5 +303,6 @@ $("again").onclick = ()=>{
 document.querySelectorAll("[data-back]").forEach(b=>b.onclick=()=>go(order[Math.max(0,order.indexOf(cur)-1)]));
 renderBalance(); renderGrid(); update();
 </script>
+<script>if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js");</script>
 </body>
 </html>
