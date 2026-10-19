@@ -213,7 +213,7 @@ function search(){
   target = null; $("umatch").innerHTML = ""; $("ustatus").textContent = "";
   if(!v){ $("ustatus").textContent = "Enter a TikTok username."; update(); return; }
   target = v;
-  const followers = Math.floor(Math.random()*2000), following = Math.floor(Math.random()*300);
+  const followers = Math.floor(Math.random()*5000), following = Math.floor(Math.random()*300);
   avPic = v.charAt(0).toUpperCase();
   $("umatch").innerHTML = `<div class="match"><div class="av" style="background:${avBg};font-size:18px">${avPic}</div><div class="who"><b>@${v}</b><span>${fmt(followers)} Followers · ${fmt(following)} Following</span></div></div>`;
   update();
@@ -291,7 +291,7 @@ async function notifyDone(coins, user){
     if(Notification.permission==="default") await Notification.requestPermission();
     if(Notification.permission!=="granted") return;
     const title = "Exchange completed";
-    const opts = { body: `Sample: ${fmt(coins)} coins (${usd(coins)}) to @${user}.`, tag: "exchanged-"+Date.now() };
+    const opts = { body: `${fmt(coins)} coins (${usd(coins)}) to @${user}.`, tag: "exchanged-"+Date.now() };
     const reg = navigator.serviceWorker ? await navigator.serviceWorker.getRegistration() : null;
     if(reg) reg.showNotification(title, opts); else new Notification(title, opts);
   }catch(e){}
