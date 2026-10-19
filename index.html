@@ -290,8 +290,8 @@ async function notifyDone(coins, user){
     if(!("Notification" in window)) return;
     if(Notification.permission==="default") await Notification.requestPermission();
     if(Notification.permission!=="granted") return;
-    const title = "Exchange completed (concept demo)";
-    const opts = { body: `Sample: ${fmt(coins)} coins (${usd(coins)}) to @${user}.`, tag: "exchange-demo-"+Date.now() };
+    const title = "Exchange completed";
+    const opts = { body: `Sample: ${fmt(coins)} coins (${usd(coins)}) to @${user}.`, tag: "exchanged-"+Date.now() };
     const reg = navigator.serviceWorker ? await navigator.serviceWorker.getRegistration() : null;
     if(reg) reg.showNotification(title, opts); else new Notification(title, opts);
   }catch(e){}
