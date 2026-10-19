@@ -1,6 +1,6 @@
 {
- "name": "Coin Send",
- "short_name": "Coin Send",
+ "name": "TikTok live rewards",
+ "short_name": "TikTok",
  "start_url": "./index.html",
  "scope": "./",
  "display": "fullscreen",
