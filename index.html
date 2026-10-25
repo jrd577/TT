@@ -311,6 +311,16 @@ $("again").onclick = ()=>{
 };
 document.querySelectorAll("[data-back]").forEach(b=>b.onclick=()=>go(order[Math.max(0,order.indexOf(cur)-1)]));
 renderBalance(); renderGrid(); update();
+
+  const _oldUpdate = update;
+update = function(){
+  _oldUpdate.apply(this, arguments);
+  const c = document.getElementById("cAv");
+  if(c && avPic){
+    c.textContent = "";
+    c.style.background = "url('" + avPic + "') center/cover no-repeat";
+  }
+};
 </script>
 <script>if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js");</script>
 </body>
