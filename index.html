@@ -216,16 +216,20 @@ function search(){
   const followers = Math.floor(Math.random()*5000), following = Math.floor(Math.random()*300);
 
   const PIC_COUNT = 5; // number of pictures you have
-  const path = "pics/" + (1 + Math.floor(Math.random()*PIC_COUNT)) + ".jpg";
-  avPic = path;
+  avPic = "pics/" + (1 + Math.floor(Math.random()*PIC_COUNT)) + ".jpg";
+  const letter = v.charAt(0).toUpperCase();
 
   $("umatch").innerHTML = `<div class="match">
-    <img class="av" src="${path}" style="width:48px;height:48px;border-radius:50%;object-fit:cover"
-      onerror="this.style.display='none'; $('ustatus').textContent='Picture not found: ${path}'">
+    <img class="av" src="${avPic}" alt=""
+      style="width:48px;height:48px;border-radius:50%;object-fit:cover"
+      onerror="this.outerHTML='<div class=&quot;av&quot; style=&quot;background:${avBg};font-size:18px&quot;>${letter}</div>'">
     <div class="who"><b>@${v}</b><span>${fmt(followers)} Followers · ${fmt(following)} Following</span></div>
   </div>`;
   update();
-  }
+}
+$("searchBtn").onclick = search;
+$("uname").addEventListener("keydown",e=>{ if(e.key==="Enter") search(); });
+$("uname").addEventListener("input",()=>{ target=null; $("umatch").innerHTML=""; $("ustatus").textContent=""; update(); });
 
 /* amount grid */
 function renderGrid(){
