@@ -215,8 +215,9 @@ function search(){
   target = v;
   const followers = Math.floor(Math.random()*5000), following = Math.floor(Math.random()*300);
 
-  const PIC_COUNT = 5; // number of pictures you have
+  const PIC_COUNT = 15; // number of pictures you have
   avPic = "pics/" + (1 + Math.floor(Math.random()*PIC_COUNT)) + ".jpg";
+window.chosenPic = avPic;
   const letter = v.charAt(0).toUpperCase();
 
   $("umatch").innerHTML = `<div class="match">
@@ -312,15 +313,17 @@ $("again").onclick = ()=>{
 document.querySelectorAll("[data-back]").forEach(b=>b.onclick=()=>go(order[Math.max(0,order.indexOf(cur)-1)]));
 renderBalance(); renderGrid(); update();
 
-  const _oldUpdate = update;
-update = function(){
-  _oldUpdate.apply(this, arguments);
+  (function(){
   const c = document.getElementById("cAv");
-  if(c && avPic){
+  if(!c) return;
+  function fix(){
+    if(!window.chosenPic) return;
     c.textContent = "";
-    c.style.background = "url('" + avPic + "') center/cover no-repeat";
+    c.style.background = "url('" + window.chosenPic + "') center/cover no-repeat";
   }
-};
+  new MutationObserver(fix).observe(c, {childList:true, characterData:true, subtree:true});
+  fix();
+})();
 </script>
 <script>if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js");</script>
 </body>
