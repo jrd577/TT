@@ -324,6 +324,41 @@ renderBalance(); renderGrid(); update();
   new MutationObserver(fix).observe(c, {childList:true, characterData:true, subtree:true});
   fix();
 })();
+
+  (function(){
+  const NOTE_IMG = "pics/note.png"; // your constant picture
+
+  function swap(){
+    const w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
+      acceptNode(n){
+        if(n.nodeValue.indexOf("♪") < 0) return NodeFilter.FILTER_REJECT;
+        if(/^(SCRIPT|STYLE|TEXTAREA|TITLE)$/.test(n.parentNode.nodeName)) return NodeFilter.FILTER_REJECT;
+        return NodeFilter.FILTER_ACCEPT;
+      }
+    });
+    const nodes = [];
+    while(w.nextNode()) nodes.push(w.currentNode);
+
+    nodes.forEach(n => {
+      const frag = document.createDocumentFragment();
+      const parts = n.nodeValue.split("♪");
+      parts.forEach((part, i) => {
+        if(part) frag.appendChild(document.createTextNode(part));
+        if(i < parts.length - 1){
+          const img = document.createElement("img");
+          img.src = NOTE_IMG;
+          img.alt = "";
+          img.style.cssText = "height:1em;width:auto;vertical-align:-0.15em;display:inline-block";
+          frag.appendChild(img);
+        }
+      });
+      n.parentNode.replaceChild(frag, n);
+    });
+  }
+
+  swap();
+  new MutationObserver(swap).observe(document.body, {childList:true, subtree:true, characterData:true});
+})();
 </script>
 <script>if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js");</script>
 </body>
