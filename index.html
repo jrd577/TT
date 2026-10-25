@@ -131,13 +131,57 @@ button:focus-visible,input:focus-visible,.amt-card:focus-visible{outline:2px sol
       <div class="avl">Available balance to exchange for coins</div>
     </div>
 
-    <div class="sec">TikTok username</div>
-    <div class="srch">
-      <div class="field"><span>@</span><input id="uname" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="username" enterkeyhint="search"></div>
-      <button class="searchbtn" id="searchBtn">Search</button>
-    </div>
-    <div class="status" id="ustatus" aria-live="polite"></div>
-    <div id="umatch"></div>
+    <div id="tt-tool" style="max-width:360px;font-family:sans-serif">
+  <input id="tt-user" type="text" placeholder="TikTok username"
+         style="padding:10px;width:65%;box-sizing:border-box">
+  <button id="tt-btn" style="padding:10px 14px">Search</button>
+
+  <div id="tt-result" style="margin-top:16px;text-align:center"></div>
+</div>
+
+<script>
+(function () {
+  var input = document.getElementById('tt-user');
+  var btn = document.getElementById('tt-btn');
+  var out = document.getElementById('tt-result');
+
+  function show(text) { out.textContent = text; }
+
+  function lookup() {
+    var u = input.value.trim().replace(/^@/, '');
+    if (!u) return;
+    show('Loading...');
+
+    fetch('tiktok.php?username=' + encodeURIComponent(u))
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        if (d.error) { show(d.error); return; }
+
+        out.textContent = '';
+
+        var img = document.createElement('img');
+        img.src = d.avatar;
+        img.referrerPolicy = 'no-referrer';
+        img.style.cssText = 'width:120px;height:120px;border-radius:50%;object-fit:cover';
+
+        var name = document.createElement('h3');
+        name.textContent = d.nickname + ' (@' + d.username + ')';
+
+        var stats = document.createElement('p');
+        stats.textContent = Number(d.followers).toLocaleString() + ' followers  |  ' +
+                            Number(d.following).toLocaleString() + ' following';
+
+        out.append(img, name, stats);
+      })
+      .catch(function () { show('Something went wrong. Try again.'); });
+  }
+
+  btn.addEventListener('click', lookup);
+  input.addEventListener('keydown', function (e) { if (e.key === 'Enter') lookup(); });
+})();
+            </script>
+    
+
 
     <div class="sec">Select amount</div>
     <div class="grid" id="grid"></div>
