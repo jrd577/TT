@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="TikTok live rewards">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>TikTok live rewards</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#ffffff; --surface:#ffffff; --card:#f4f4f5; --text:#000000; --muted:rgba(0,0,0,.6); --line:#e3e3e5;
+  --red:#fe2c55; --redbg:#fff1f4;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box;margin:0}
+html,body{background:var(--bg);color:var(--text);font-family:'Outfit',system-ui,-apple-system,'Segoe UI',sans-serif;-webkit-font-smoothing:antialiased}
+body{min-height:100vh;display:flex;justify-content:center}
+.app{width:100%;max-width:430px;min-height:100vh;display:flex;flex-direction:column;padding:0 20px 24px}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+button:focus-visible,input:focus-visible,.amt-card:focus-visible{outline:2px solid var(--red);outline-offset:2px}
+.top{display:flex;align-items:center;justify-content:space-between;height:60px}
+.top h1{font-size:19px;font-weight:700;letter-spacing:-.01em}
+.back{width:36px;height:36px;border-radius:50%;background:var(--card);display:grid;place-items:center;font-size:18px}
+.spacer{width:36px}
+.help{background:none;font-size:20px;font-weight:400}
+.view{display:none;flex:1;flex-direction:column}
+.view.on{display:flex}
+.coin{width:30px;height:30px;border-radius:50%;flex:none;background:radial-gradient(circle at 35% 30%,#ffe27a,#f5b301 60%,#d99a00);display:grid;place-items:center;color:#000;font-weight:800;font-size:15px;box-shadow:inset 0 0 0 3px rgba(255,255,255,.25)}
+.coin.sm{width:20px;height:20px;font-size:11px}
+/* balance */
+.bal{text-align:center;padding:10px 0 4px}
+.bal .lbl{font-size:16px;font-weight:600;color:var(--text)}
+.bigusd{font-size:48px;font-weight:800;letter-spacing:-.03em;line-height:1.1;margin-top:10px}
+.bal .eq{display:flex;justify-content:center;align-items:center;gap:6px;font-size:16px}
+.bal .red{color:var(--red);font-weight:600}
+.avl{margin-top:8px;font-size:13px;color:var(--muted)}
+.lbl{font-size:14px;color:var(--muted);font-weight:500}
+.coins{display:flex;align-items:center;gap:10px;margin-top:8px}
+.big{font-size:40px;font-weight:800;letter-spacing:-.03em;line-height:1}
+.eq{margin-top:10px;font-size:16px;color:var(--muted)}
+.eq b{color:var(--text);font-weight:700}
+/* sections */
+.sec{font-size:13px;font-weight:500;letter-spacing:.01em;text-transform:uppercase;color:var(--muted);margin:26px 0 12px}
+.srch{display:flex;gap:10px}
+.field{flex:1;min-width:0;display:flex;align-items:center;gap:6px;background:var(--card);border:1.5px solid var(--line);border-radius:18px;padding:0 16px;height:56px;transition:border-color .2s}
+.field:focus-within{border-color:var(--text)}
+.field span{color:var(--muted);font-size:20px;font-weight:600}
+.field input{flex:1;min-width:0;background:none;border:0;color:var(--text);font:inherit;font-size:18px;font-weight:500;outline:0}
+.field input::placeholder{color:rgba(0,0,0,.4)}
+.searchbtn{height:56px;padding:0 22px;border-radius:18px;background:#111;color:#fff;font-weight:700;font-size:17px}
+.status{margin-top:10px;font-size:14px;color:var(--red);min-height:0}
+.match{display:flex;align-items:center;gap:12px;background:var(--surface);border:1.5px solid var(--text);border-radius:16px;padding:10px 14px;margin-top:12px}
+.av{width:40px;height:40px;border-radius:50%;flex:none;display:grid;place-items:center;font-weight:700;font-size:15px;color:#fff;background:#000}
+.who{flex:1;min-width:0}
+.who b{display:block;font-weight:600;font-size:15px}
+.who span{font-size:13px;color:var(--muted)}
+.tick{width:24px;height:24px;border-radius:50%;background:#000;color:#fff;display:grid;place-items:center;font-size:14px;font-weight:800}
+/* amount grid */
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.amt-card{background:var(--card);border:1.5px solid var(--line);border-radius:20px;padding:18px 6px;min-height:92px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;cursor:pointer;transition:border-color .15s,background .15s;text-align:center}
+.amt-card .n{display:flex;align-items:center;gap:7px;font-weight:800;font-size:20px;letter-spacing:-.01em}
+.amt-card .u{font-size:14px;color:var(--muted)}
+.amt-card.sel{border-color:var(--red);background:var(--redbg)}
+.amt-card.custom .n{font-size:19px}
+.amt-card input{width:100%;max-width:92px;text-align:center;background:none;border:0;border-bottom:1.5px solid var(--red);color:var(--text);font:inherit;font-size:16px;font-weight:600;outline:0;padding:2px 0}
+.hint{margin-top:14px;font-size:14px;color:var(--muted);text-align:center;min-height:20px}
+.hint.err{color:var(--red)}
+.spacer-f{flex:1;min-height:12px}
+.cta{width:100%;height:54px;border-radius:16px;background:var(--red);color:#fff;font-weight:700;font-size:17px;margin-top:14px;transition:transform .12s,opacity .2s}
+.cta:active{transform:scale(.98)}
+.cta:disabled{opacity:.35;cursor:not-allowed}
+.cta.done-btn{background:#12a150}
+.ghost{width:100%;height:50px;border-radius:16px;background:var(--card);border:1px solid var(--line);font-weight:600;margin-top:10px}
+/* confirm / done */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:6px 18px;margin-top:10px}
+.line{display:flex;justify-content:space-between;align-items:center;padding:15px 0;border-bottom:1px solid var(--line);font-size:15px;gap:12px}
+.line:last-child{border-bottom:0}
+.line span:first-child{color:var(--muted)}
+.line b{font-weight:600;display:flex;align-items:center;gap:6px;text-align:right}
+.line.total b{font-size:18px}
+.note{margin-top:14px;font-size:13px;color:var(--muted);text-align:center}
+.done{align-items:center;text-align:center;padding-top:40px}
+.burst{width:96px;height:96px;border-radius:50%;background:#12a150;color:#fff;display:grid;place-items:center;font-size:48px;font-weight:800;animation:pop .45s cubic-bezier(.2,1.4,.4,1)}
+@keyframes pop{from{transform:scale(.3);opacity:0}to{transform:scale(1);opacity:1}}
+.done h3{font-size:28px;font-weight:800;margin-top:22px;letter-spacing:-.02em}
+.done .sub{display:flex;align-items:center;justify-content:center;gap:6px;color:var(--muted);margin-top:10px;font-size:17px}
+.done .sub b{color:var(--text);font-weight:700}
+.rcpt{width:100%;text-align:left;margin-top:34px}
+.rcpt .line{border-bottom:0;padding:16px 0;font-size:16px}
+.rcpt .green{color:var(--text);font-weight:600}
+.gifter{width:100%;display:flex;align-items:flex-start;gap:12px;text-align:left;margin-top:22px;padding:14px;background:var(--card);border-radius:16px}
+.gi{width:44px;height:44px;border-radius:12px;flex:none;display:block;object-fit:cover}
+.gt b{display:block;font-size:15px;font-weight:600}
+.gt span{display:block;margin-top:4px;font-size:13px;line-height:1.35;color:var(--muted)}
+.proto{margin-top:14px;padding:8px 14px;border-radius:999px;background:var(--card);font-size:12px;color:var(--muted);font-weight:500}
+.scrim{position:fixed;inset:0;background:rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:opacity .2s;z-index:20}
+.scrim.on{opacity:1;pointer-events:auto}
+.sheet{position:fixed;left:50%;bottom:0;width:100%;max-width:430px;background:#fff;border-radius:24px 24px 0 0;padding:20px 20px calc(16px + env(safe-area-inset-bottom,0px));transform:translate(-50%,100%);visibility:hidden;transition:transform .28s cubic-bezier(.2,.8,.2,1),visibility 0s .28s;z-index:21;box-shadow:0 -8px 30px rgba(0,0,0,.15)}
+.sheet.on{transform:translate(-50%,0);visibility:visible;transition:transform .28s cubic-bezier(.2,.8,.2,1),visibility 0s}
+.sh-top{display:flex;justify-content:space-between;align-items:center}
+.sh-top b{font-size:17px;font-weight:700}
+.sh-in{display:flex;align-items:center;gap:12px;margin-top:16px;padding-bottom:10px;border-bottom:1.5px solid var(--line)}
+.sh-in .val{flex:1;font-size:28px;font-weight:700;min-height:34px;line-height:34px}
+.sh-in .val.ph{color:rgba(0,0,0,.35);font-weight:500;font-size:20px}
+.sh-meta{display:flex;justify-content:space-between;gap:10px;margin-top:10px;font-size:13px;color:var(--muted)}
+.sh-meta.err #shHelp{color:var(--red)}
+.sh-meta button{font-weight:700;color:var(--text);font-size:14px;padding:0 4px}
+.keys{display:grid;grid-template-columns:repeat(3,1fr);margin-top:6px}
+.keys button{height:58px;font-size:26px;font-weight:600;border-radius:12px}
+.keys button:active{background:var(--card)}
+.keys button:disabled{visibility:hidden}
+.dots{display:inline-flex;align-items:center;gap:6px;margin-left:10px;vertical-align:middle}
+.dots i{width:8px;height:8px;border-radius:50%;background:currentColor;opacity:.35;animation:dot 1.2s infinite ease-in-out}
+.dots i:nth-child(2){animation-delay:.2s}
+.dots i:nth-child(3){animation-delay:.4s}
+@keyframes dot{0%,80%,100%{opacity:.35;transform:scale(.8)}40%{opacity:1;transform:scale(1.15)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- HOME -->
+  <section class="view on" id="v-home">
+    <div class="top"><button class="back" data-back aria-label="Back">←</button><h1>Exchange</h1><button class="back help" id="helpBtn" aria-label="Help">?</button></div>
+    <div class="bal">
+      <div class="lbl">TikTok Coins Balance</div>
+      <div class="bigusd" id="balUsd">$0.00</div>
+      <div class="eq">≈ <span class="red" id="balUsd2">$0.00</span> (<span class="coin sm">♪</span><span id="balCoins">0</span>)</div>
+      <div class="avl">Available balance to exchange the coins</div>
+    </div>
+
+    <div class="sec">TikTok username</div>
+    <div class="srch">
+      <div class="field"><span>@</span><input id="uname" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="username" enterkeyhint="search"></div>
+      <button class="searchbtn" id="searchBtn">Search</button>
+    </div>
+    <div class="status" id="ustatus" aria-live="polite"></div>
+    <div id="umatch"></div>
+
+    <div class="sec">Select amount</div>
+    <div class="grid" id="grid"></div>
+    <div class="hint" id="hint"></div>
+
+    <div class="spacer-f"></div>
+    <button class="cta" id="sendBtn" disabled>Send coins</button>
+  </section>
+
+  <!-- CONFIRM -->
+  <section class="view" id="v-confirm">
+    <div class="top"><button class="back" data-back aria-label="Back">‹</button><h1>Confirm</h1><span class="spacer"></span></div>
+    <div class="card">
+      <div class="line"><span>To</span><b><span class="av" id="cAv" style="width:28px;height:28px;font-size:12px"></span><span id="cName"></span></b></div>
+      <div class="line"><span>You send</span><b><span class="coin sm">♪</span><span id="cCoins"></span></b></div>
+      <div class="line"><span>Worth</span><b id="cUsd"></b></div>
+      <div class="line total"><span>Balance after</span><b><span class="coin sm">♪</span><span id="cAfter"></span></b></div>
+    </div>
+    <div class="note">Coin transfers can't be undone.</div>
+    <div class="spacer-f"></div>
+    <button class="cta" id="confirmSend">Confirm exchange</button>
+    <button class="ghost" data-back>Edit amount</button>
+  </section>
+
+  <!-- SUCCESS -->
+  <section class="view done" id="v-done">
+    <div class="burst"><svg width="96" height="96" viewBox="0 0 96 96" aria-hidden="true"><path d="M32 53 L42 62 L65 37" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <h3>Exchange Completed!</h3>
+    <p class="sub">You exchanged for <span class="coin sm">♪</span> <b id="dHead"></b> Coins</p>
+    <div class="rcpt">
+      <div class="line"><span>Recipient</span><b class="green" id="dName"></b></div>
+      <div class="line"><span>Coins</span><b id="dCoins"></b></div>
+      <div class="line"><span>Amount</span><b id="dUsd"></b></div>
+      <div class="line"><span>Remaining Balance</span><b><span id="dBal"></span> Coins</b></div>
+    </div>
+    <div class="gifter">
+      <img class="gi" src="icon-192.png" alt="">
+      <div class="gt"><b>Start gifter level</b><span>Send your first Gift to begin your gifter journey and unlock more rewards as you level up.</span></div>
+    </div>
+    <div class="spacer-f"></div>
+    <button class="cta done-btn" id="again">Done</button>
+  </section>
+
+</div>
+
+<div class="scrim" id="scrim"></div>
+<div class="sheet" id="sheet" role="dialog" aria-label="Custom amount">
+  <div class="sh-top"><span class="lbl">Number of coins</span><b>Custom</b></div>
+  <div class="sh-in"><span class="coin">♪</span><div class="val ph" id="shVal">Enter any amount</div></div>
+  <div class="sh-meta" id="shMeta"><span id="shHelp"></span><button id="shAll">All</button></div>
+  <div class="keys" id="keys"></div>
+  <button class="cta" id="shOk" disabled>Confirm</button>
+</div>
+
+<script>
+const USD_PER_COIN = 8.25/700;
+let balance = 3504562424;
+let target = null, amount = 0, custom = false, avBg = "#3a3a3f", avPic = "";
+const presets = [70,350,700,1400,3500];
+const $ = id => document.getElementById(id);
+const fmt = n => n.toLocaleString("en-US");
+const usd = n => "$" + (Math.round(n*USD_PER_COIN*100+1e-7)/100).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
+const initials = s => (s.replace(/[._]+/g," ").split(/\s+/).filter(Boolean).map(w=>w[0]).slice(0,2).join("") || "?").toUpperCase();
+const order = ["home","confirm","done"];
+let cur = "home";
+function go(v){ cur=v; document.querySelectorAll(".view").forEach(s=>s.classList.toggle("on", s.id==="v-"+v)); window.scrollTo(0,0); }
+
+function renderBalance(){ $("balCoins").textContent = fmt(balance); $("balUsd").textContent = usd(balance); $("balUsd2").textContent = usd(balance); }
+
+/* username search (demo: every username exists) */
+function search(){
+  const v = $("uname").value.trim().replace(/^@/,"").toLowerCase();
+  target = null; $("umatch").innerHTML = ""; $("ustatus").textContent = "";
+  if(!v){ $("ustatus").textContent = "Enter a TikTok username."; update(); return; }
+  target = v;
+  const followers = Math.floor(Math.random()*5000), following = Math.floor(Math.random()*300);
+
+  const PIC_COUNT = 5; // number of pictures you have
+  avPic = "pics/" + (1 + Math.floor(Math.random()*PIC_COUNT)) + ".jpg";
+  const letter = v.charAt(0).toUpperCase();
+
+  $("umatch").innerHTML = `<div class="match">
+    <img class="av" src="${avPic}" alt=""
+      style="width:48px;height:48px;border-radius:50%;object-fit:cover"
+      onerror="this.outerHTML='<div class=&quot;av&quot; style=&quot;background:${avBg};font-size:18px&quot;>${letter}</div>'">
+    <div class="who"><b>@${v}</b><span>${fmt(followers)} Followers · ${fmt(following)} Following</span></div>
+  </div>`;
+  update();
+}
+$("searchBtn").onclick = search;
+$("uname").addEventListener("keydown",e=>{ if(e.key==="Enter") search(); });
+$("uname").addEventListener("input",()=>{ target=null; $("umatch").innerHTML=""; $("ustatus").textContent=""; update(); });
+
+/* amount grid */
+function renderGrid(){
+  $("grid").innerHTML = presets.map(n=>`<div class="amt-card ${!custom&&amount===n?'sel':''}" tabindex="0" role="button" data-n="${n}">
+      <div class="n"><span class="coin sm">♪</span>${fmt(n)}</div><div class="u">${usd(n)}</div></div>`).join("") +
+    `<div class="amt-card custom ${custom?'sel':''}" tabindex="0" role="button" data-custom="1">
+      ${custom&&amount ? `<div class="n"><span class="coin sm">♪</span>${fmt(amount)}</div><div class="u">${usd(amount)}</div>` : `<div class="n">Custom</div><div class="u">Type amount</div>`}
+    </div>`;
+}
+$("grid").addEventListener("click",e=>{
+  const c = e.target.closest(".amt-card"); if(!c) return;
+  if(c.dataset.n){ custom=false; amount=+c.dataset.n; renderGrid(); update(); }
+  else if(c.dataset.custom){ openSheet(); }
+});
+$("grid").addEventListener("keydown",e=>{ if((e.key==="Enter"||e.key===" ") && e.target.classList.contains("amt-card")){ e.preventDefault(); e.target.click(); } });
+/* custom amount bottom sheet */
+let draft = "";
+const MIN = 100;
+$("keys").innerHTML = ["1","2","3","4","5","6","7","8","9","","0","⌫"].map(k=>`<button data-k="${k}" ${k===""?"disabled":""} ${k==="⌫"?'aria-label="Delete"':""}>${k}</button>`).join("");
+function renderSheet(){
+  const n = parseInt(draft||"0",10) || 0;
+  const v = $("shVal"); v.textContent = n ? fmt(n) : "Enter any amount"; v.classList.toggle("ph", !n);
+  let msg, err = false;
+  if(n > balance){ msg = `Not enough coins. You have ${fmt(balance)}.`; err = true; }
+  else if(n > 0 && n < MIN){ msg = `Minimum ${MIN} coins`; err = true; }
+  else if(n){ msg = `≈ ${usd(n)}`; }
+  else { msg = `Minimum ${MIN} coins, maximum ${fmt(balance)} coins`; }
+  $("shHelp").textContent = msg; $("shMeta").classList.toggle("err", err);
+  $("shOk").disabled = !(n >= MIN && n <= balance);
+}
+function openSheet(){ draft = custom && amount ? String(amount) : ""; renderSheet(); $("sheet").classList.add("on"); $("scrim").classList.add("on"); }
+function closeSheet(){ $("sheet").classList.remove("on"); $("scrim").classList.remove("on"); }
+$("keys").addEventListener("click",e=>{
+  const k = e.target.closest("button"); if(!k) return; const d = k.dataset.k;
+  if(d === "⌫") draft = draft.slice(0,-1);
+  else if(d && draft.length < 9) draft = (draft + d).replace(/^0+/,"");
+  renderSheet();
+});
+$("shAll").onclick = ()=>{ draft = String(balance); renderSheet(); };
+$("shOk").onclick = ()=>{ amount = parseInt(draft,10); custom = true; closeSheet(); renderGrid(); update(); };
+$("scrim").onclick = closeSheet;
+document.addEventListener("keydown",e=>{ if(e.key==="Escape") closeSheet(); });
+
+function update(){
+  const h = $("hint"); let ok = true;
+  if(amount>balance){ h.className="hint err"; h.textContent=`Not enough coins. You have ${fmt(balance)}.`; ok=false; }
+  else if(amount>0){ h.className="hint"; h.textContent=`${fmt(amount)} coins ≈ ${usd(amount)}`; }
+  else { h.className="hint"; h.textContent=""; }
+  $("sendBtn").disabled = !(ok && amount>0 && target);
+}
+
+$("sendBtn").onclick = ()=>{
+  $("cAv").textContent = avPic; $("cAv").style.background = avBg; $("cAv").style.fontSize = "13px"; $("cName").textContent = "@"+target;
+  $("cCoins").textContent = fmt(amount); $("cUsd").textContent = usd(amount);
+  $("cAfter").textContent = fmt(balance-amount);
+  go("confirm");
+};
+let processing = false;
+$("confirmSend").onclick = ()=>{
+  if(processing) return;
+  processing = true;
+  const btn = $("confirmSend"), edit = document.querySelector("#v-confirm .ghost");
+  btn.disabled = true; edit.disabled = true;
+  btn.setAttribute("aria-busy","true");
+  btn.innerHTML = 'Processing<span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>';
+  setTimeout(()=>{
+    balance -= amount;
+    $("dHead").textContent = fmt(amount); $("dName").textContent = "@"+target;
+    $("dCoins").textContent = fmt(amount); $("dUsd").textContent = usd(amount); $("dBal").textContent = fmt(balance);
+    notifyDone(amount, target);
+    btn.disabled = false; edit.disabled = false; btn.removeAttribute("aria-busy");
+    btn.textContent = "Confirm exchange"; processing = false;
+    go("done");
+  }, 2000);
+};
+async function notifyDone(coins, user){
+  try{
+    if(!("Notification" in window)) return;
+    if(Notification.permission==="default") await Notification.requestPermission();
+    if(Notification.permission!=="granted") return;
+    const title = "Exchange completed";
+    const opts = { body: `${fmt(coins)} coins (${usd(coins)}) to @${user}.`, tag: "exchanged-"+Date.now() };
+    const reg = navigator.serviceWorker ? await navigator.serviceWorker.getRegistration() : null;
+    if(reg) reg.showNotification(title, opts); else new Notification(title, opts);
+  }catch(e){}
+}
+$("again").onclick = ()=>{
+  target=null; amount=0; custom=false; $("uname").value=""; $("umatch").innerHTML=""; $("ustatus").textContent="";
+  renderBalance(); renderGrid(); update(); go("home");
+};
+document.querySelectorAll("[data-back]").forEach(b=>b.onclick=()=>go(order[Math.max(0,order.indexOf(cur)-1)]));
+renderBalance(); renderGrid(); update();
+</script>
+<script>if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js");</script>
+</body>
+</html>
